@@ -33,6 +33,7 @@ const popularTimezones = [
 
 export default function Home() {
   const [currentTime, setCurrentTime] = useState(new Date())
+  const [fullscreenTime, setFullscreenTime] = useState(false)
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
   const [fromTimezone, setFromTimezone] = useState("UTC")
   const [toTimezone, setToTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone)
@@ -338,7 +339,8 @@ export default function Home() {
               <div className="mb-8">
                 <h2 className="text-xl md:text-2xl font-medium mb-2">Current Time</h2>
                 <div
-                  className={`text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-none ${jetbrainsMono.className}`}
+                  className={`text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-none ${jetbrainsMono.className} cursor-pointer`}
+                  onClick={() => setFullscreenTime(true)}
                 >
                   {formattedTime}
                 </div>
@@ -827,6 +829,18 @@ export default function Home() {
       <footer className="container mx-auto px-4 py-6 text-center text-sm text-gray-600 dark:text-gray-400 mt-16">
         <p> {new Date().getFullYear()} datetime.app - Precise World Time</p>
       </footer>
+
+      {fullscreenTime && (
+        <div className="fixed inset-0 bg-black bg-opacity-90 flex flex-col justify-center items-center z-50">
+          <div className="text-[20rem] font-bold text-white leading-none">{formattedTime}</div>
+          <button
+            className="absolute top-4 right-4 text-white p-2 text-xl"
+            onClick={() => setFullscreenTime(false)}
+          >
+            Close
+          </button>
+        </div>
+      )}
     </main>
   )
 }
