@@ -7,11 +7,12 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Calendar } from "@/components/ui/calendar"
-import { Clock, Globe, CalendarIcon, Timer, ArrowLeftRight, Sun, Moon, AlertCircle, Copy, Check } from "lucide-react"
+import { Clock, Globe, CalendarIcon, Timer, ArrowLeftRight, Sun, Moon, AlertCircle, Copy, Check, Maximize2 } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Label } from "@/components/ui/label"
 import { format } from "date-fns"
 import { JetBrains_Mono } from "next/font/google"
+import { FullscreenTime } from '@/components/fullscreen-time'
 
 // Load JetBrains Mono for numbers
 const jetbrainsMono = JetBrains_Mono({
@@ -50,6 +51,7 @@ export default function Home() {
   const [accuracy, setAccuracy] = useState({ offset: 0, latency: 0 })
   const [activeTab, setActiveTab] = useState("current-time")
   const [copiedStates, setCopiedStates] = useState<{[key: string]: boolean}>({})
+  const [isFullscreen, setIsFullscreen] = useState(false)
 
   // Update current time every second
   useEffect(() => {
@@ -338,11 +340,20 @@ export default function Home() {
             <div className="text-center">
               <div className="mb-8">
                 <h2 className="text-xl md:text-2xl font-medium mb-2">Current Time</h2>
-                <div
-                  className={`text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-none ${jetbrainsMono.className} cursor-pointer`}
-                  onClick={() => setFullscreenTime(true)}
-                >
-                  {formattedTime}
+                <div className="relative group">
+                  <div 
+                    className={`text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-none ${jetbrainsMono.className} cursor-pointer`}
+                    onClick={() => setIsFullscreen(true)}
+                  >
+                    {formattedTime}
+                  </div>
+                  <button 
+                    onClick={() => setIsFullscreen(true)}
+                    className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-all"
+                    title="Enter fullscreen"
+                  >
+                    <Maximize2 className="w-6 h-6" />
+                  </button>
                 </div>
                 <div className="text-xl md:text-2xl font-medium mt-2">{formattedDate}</div>
 
@@ -855,17 +866,11 @@ export default function Home() {
         <p> {new Date().getFullYear()} datetime.app - Precise World Time</p>
       </footer>
 
-      {fullscreenTime && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 flex flex-col justify-center items-center z-50">
-          <div className="text-[20rem] font-bold text-white leading-none">{formattedTime}</div>
-          <button
-            className="absolute top-4 right-4 text-white p-2 text-xl"
-            onClick={() => setFullscreenTime(false)}
-          >
-            Close
-          </button>
-        </div>
-      )}
+      <FullscreenTime 
+        time={formattedTime}
+        isFullscreen={isFullscreen}
+        onClose={() => setIsFullscreen(false)}
+      />
     </main>
   )
 }

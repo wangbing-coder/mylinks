@@ -143,7 +143,10 @@ export default function CityPage({ params }: CityPageProps) {
               {cityInfo.timezone} Time Zone
             </h2>
             <div className="relative group">
-              <div className={`text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-none ${jetbrainsMono.className}`}>
+              <div 
+                className={`text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-none ${jetbrainsMono.className} cursor-pointer`}
+                onClick={() => setIsFullscreen(true)}
+              >
                 {formattedTime}
               </div>
               <button 
