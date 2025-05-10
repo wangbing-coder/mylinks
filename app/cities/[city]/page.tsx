@@ -1,14 +1,15 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, use } from "react"
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Globe, Clock, AlertCircle, Copy, Check } from 'lucide-react'
+import { Globe, Clock, AlertCircle, Copy, Check, Maximize2 } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { JetBrains_Mono } from "next/font/google"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { citiesData } from './metadata'
+import { FullscreenTime } from '@/components/fullscreen-time'
 
 // Load JetBrains Mono for numbers
 const jetbrainsMono = JetBrains_Mono({
@@ -21,11 +22,13 @@ interface CityPageProps {
 }
 
 export default function CityPage({ params }: CityPageProps) {
-  const city = params.city;
+  const resolvedParams = use(params)
+  const city = resolvedParams.city;
   const cityInfo = citiesData[city as keyof typeof citiesData];
   const [currentTime, setCurrentTime] = useState(new Date())
   const [accuracy, setAccuracy] = useState({ offset: 0, latency: 0 })
   const [copiedStates, setCopiedStates] = useState<{[key: string]: boolean}>({})
+  const [isFullscreen, setIsFullscreen] = useState(false)
   
   if (!cityInfo) {
     notFound();
@@ -139,8 +142,17 @@ export default function CityPage({ params }: CityPageProps) {
             <h2 className="text-xl md:text-2xl font-medium mb-2 text-muted-foreground">
               {cityInfo.timezone} Time Zone
             </h2>
-            <div className={`text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-none ${jetbrainsMono.className}`}>
-              {formattedTime}
+            <div className="relative group">
+              <div className={`text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-none ${jetbrainsMono.className}`}>
+                {formattedTime}
+              </div>
+              <button 
+                onClick={() => setIsFullscreen(true)}
+                className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-all"
+                title="Enter fullscreen"
+              >
+                <Maximize2 className="w-6 h-6" />
+              </button>
             </div>
             <div className="text-xl md:text-2xl font-medium mt-2">{formattedDate}</div>
 
@@ -163,7 +175,7 @@ export default function CityPage({ params }: CityPageProps) {
                 <CardTitle className="text-lg">Timezone Information</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className={jetbrainsMono.className}>{cityInfo.timezone}</p>
+                <p className={jetbrainsMono.className}>{cityInfo.timezone} (GMT{cityInfo.offset > 0 ? '+' : ''}{cityInfo.offset})</p>
               </CardContent>
             </Card>
 
@@ -281,6 +293,13 @@ export default function CityPage({ params }: CityPageProps) {
           </Card>
         </div>
       </div>
+      {isFullscreen && (
+        <FullscreenTime 
+          time={formattedTime}
+          isFullscreen={isFullscreen}
+          onClose={() => setIsFullscreen(false)}
+        />
+      )}
     </main>
   );
 }
