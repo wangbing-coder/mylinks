@@ -28,6 +28,16 @@ pnpm run dev
 pnpm run build
 ```
 
+## Other Products
+
+Check out our other tools and services:
+
+- [Query.Domains](https://query.domains) - Domain name search and availability checker
+- [Favicon.im](https://favicon.im) - Website favicon generator and manager
+- [Done.is](https://done.is) - Task management and productivity tool
+- [Logo.surf](https://logo.surf) - Logo design and branding platform
+- [Qrcode.fun](https://qrcode.fun) - Creative QR code generator
+
 ## License
 
 MIT License
