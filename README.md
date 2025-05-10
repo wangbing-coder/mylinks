@@ -1,30 +1,53 @@
-# Datetime.app clone
+# datetime.app
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+[datetime.app](https://datetime.app) is a clean and powerful time viewing and conversion tool designed for developers, remote teams, and anyone who needs to work with different time zones.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/airylands-projects-9b1b8a41/v0-datetime-app-clone)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/bQwX0GDwp7c)
+## Features
 
-## Overview
+- Clean and intuitive interface
+- Precise time display and conversion
+- Support for multiple time formats
+- Convenient timezone conversion
+- Perfect for remote team collaboration
+- Developer-friendly features
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+## Technology
 
-## Deployment
+datetime.app is developed by the [datetime.app](https://datetime.app) team, powered by [v0.dev](https://v0.dev) and Windsurf, dedicated to providing the best time management experience for our users.
 
-Your project is live at:
+## Development
 
-**[https://vercel.com/airylands-projects-9b1b8a41/v0-datetime-app-clone](https://vercel.com/airylands-projects-9b1b8a41/v0-datetime-app-clone)**
+```bash
+# Install dependencies
+pnpm install
 
-## Build your app
+# Run development server
+pnpm run dev
 
-Continue building your app on:
+# Build for production
+pnpm run build
+```
 
-**[https://v0.dev/chat/projects/bQwX0GDwp7c](https://v0.dev/chat/projects/bQwX0GDwp7c)**
+## License
 
-## How It Works
+MIT License
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+Copyright (c) 2024 datetime.app
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
