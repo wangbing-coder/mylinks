@@ -4,8 +4,9 @@ export function Footer() {
   return (
     <footer className="container mx-auto px-4 py-6 text-center text-sm text-gray-600 dark:text-gray-400 mt-16">
       <p className="mb-2">{new Date().getFullYear()} datetime.app - Precise World Time</p>
-      <p>
+      <p className="space-x-4">
         <Link href="/about" className="hover:text-gray-900 dark:hover:text-gray-200">About</Link>
+        <Link href="https://github.com/airyland/datetime.app" className="hover:text-gray-900 dark:hover:text-gray-200" target="_blank" rel="noopener noreferrer">GitHub</Link>
       </p>
     </footer>
   )
