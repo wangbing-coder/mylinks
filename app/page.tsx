@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Calendar } from "@/components/ui/calendar"
-import { Clock, Globe, CalendarIcon, Timer, ArrowLeftRight, Sun, Moon, AlertCircle } from "lucide-react"
+import { Clock, Globe, CalendarIcon, Timer, ArrowLeftRight, Sun, Moon, AlertCircle, Copy, Check } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Label } from "@/components/ui/label"
 import { format } from "date-fns"
@@ -48,13 +48,20 @@ export default function Home() {
   const [location, setLocation] = useState("")
   const [accuracy, setAccuracy] = useState({ offset: 0, latency: 0 })
   const [activeTab, setActiveTab] = useState("current-time")
+  const [copiedStates, setCopiedStates] = useState<{[key: string]: boolean}>({})
 
   // Update current time every second
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date()
       setCurrentTime(now)
+    }, 1000)
 
+    return () => clearInterval(timer)
+  }, [])
+
+  useEffect(() => {
+    const timer = setInterval(() => {
       // Calculate time accuracy
       const start = performance.now()
       fetch("https://worldtimeapi.org/api/ip")
@@ -72,7 +79,7 @@ export default function Home() {
         .catch(() => {
           // If API fails, don't update accuracy
         })
-    }, 20000)
+    }, 10000)
 
     return () => clearInterval(timer)
   }, [])
@@ -214,6 +221,16 @@ export default function Home() {
     setCountdownTimeLeft("")
   }
 
+  // Copy to clipboard function with feedback
+  const copyToClipboard = (text: string, key: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedStates(prev => ({ ...prev, [key]: true }))
+      setTimeout(() => {
+        setCopiedStates(prev => ({ ...prev, [key]: false }))
+      }, 2000)
+    }).catch(console.error)
+  }
+
   return (
     <main className="min-h-screen bg-white dark:bg-black flex flex-col">
       <header className="container mx-auto px-4 py-6 flex justify-between items-center">
@@ -341,7 +358,7 @@ export default function Home() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 max-w-3xl mx-auto">
-                <Card>
+                <Card className="shadow-none rounded-none border">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg">Timezone Information</CardTitle>
                   </CardHeader>
@@ -350,30 +367,69 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="shadow-none rounded-none border">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg">Unix Timestamp</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <p className={jetbrainsMono.className}>{timestamp}</p>
+                  <CardContent className="text-center">
+                    <div className="inline-flex items-center gap-2">
+                      <p className={jetbrainsMono.className}>{timestamp}</p>
+                      <button
+                        onClick={() => copyToClipboard(timestamp.toString(), 'timestamp')}
+                        className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors group"
+                        title="Copy to clipboard"
+                      >
+                        {copiedStates['timestamp'] ? (
+                          <Check className="h-4 w-4 text-gray-400 group-hover:text-gray-900 dark:text-gray-500 dark:group-hover:text-gray-100 transition-colors" />
+                        ) : (
+                          <Copy className="h-4 w-4 text-gray-400 group-hover:text-gray-900 dark:text-gray-500 dark:group-hover:text-gray-100 transition-colors" />
+                        )}
+                      </button>
+                    </div>
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="shadow-none rounded-none border">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg">UTC Time</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <p className={jetbrainsMono.className}>{utcTime}</p>
+                  <CardContent className="text-center">
+                    <div className="inline-flex items-center gap-2">
+                      <p className={jetbrainsMono.className}>{utcTime}</p>
+                      <button
+                        onClick={() => copyToClipboard(utcTime, 'utc')}
+                        className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors group"
+                        title="Copy to clipboard"
+                      >
+                        {copiedStates['utc'] ? (
+                          <Check className="h-4 w-4 text-gray-400 group-hover:text-gray-900 dark:text-gray-500 dark:group-hover:text-gray-100 transition-colors" />
+                        ) : (
+                          <Copy className="h-4 w-4 text-gray-400 group-hover:text-gray-900 dark:text-gray-500 dark:group-hover:text-gray-100 transition-colors" />
+                        )}
+                      </button>
+                    </div>
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="shadow-none rounded-none border">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg">ISO Format</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <p className={jetbrainsMono.className}>{isoTime}</p>
+                  <CardContent className="text-center">
+                    <div className="inline-flex items-center gap-2">
+                      <p className={jetbrainsMono.className}>{isoTime}</p>
+                      <button
+                        onClick={() => copyToClipboard(isoTime, 'iso')}
+                        className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors group"
+                        title="Copy to clipboard"
+                      >
+                        {copiedStates['iso'] ? (
+                          <Check className="h-4 w-4 text-gray-400 group-hover:text-gray-900 dark:text-gray-500 dark:group-hover:text-gray-100 transition-colors" />
+                        ) : (
+                          <Copy className="h-4 w-4 text-gray-400 group-hover:text-gray-900 dark:text-gray-500 dark:group-hover:text-gray-100 transition-colors" />
+                        )}
+                      </button>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
@@ -769,7 +825,7 @@ export default function Home() {
       </div>
 
       <footer className="container mx-auto px-4 py-6 text-center text-sm text-gray-600 dark:text-gray-400 mt-16">
-        <p>© {new Date().getFullYear()} datetime.app - Precise World Time</p>
+        <p> {new Date().getFullYear()} datetime.app - Precise World Time</p>
       </footer>
     </main>
   )
