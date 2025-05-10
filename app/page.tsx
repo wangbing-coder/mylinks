@@ -722,8 +722,33 @@ export default function Home() {
           </div>
         </div>
 
-        {/* FAQ Section - Always visible for SEO */}
-        <div className="mt-16 max-w-3xl mx-auto text-left">
+        {/* City Links Section */}
+        <div className="mt-16 max-w-3xl mx-auto">
+          <h2 className="text-2xl font-bold mb-6 text-center">World City Times</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+            <a href="/cities/new-york" className="text-primary font-medium py-2 px-4 rounded-lg bg-accent/50 hover:bg-accent transition-colors flex items-center justify-center">
+              New York
+            </a>
+            <a href="/cities/london" className="text-primary font-medium py-2 px-4 rounded-lg bg-accent/50 hover:bg-accent transition-colors flex items-center justify-center">
+              London
+            </a>
+            <a href="/cities/tokyo" className="text-primary font-medium py-2 px-4 rounded-lg bg-accent/50 hover:bg-accent transition-colors flex items-center justify-center">
+              Tokyo
+            </a>
+            <a href="/cities/paris" className="text-primary font-medium py-2 px-4 rounded-lg bg-accent/50 hover:bg-accent transition-colors flex items-center justify-center">
+              Paris
+            </a>
+            <a href="/cities/sydney" className="text-primary font-medium py-2 px-4 rounded-lg bg-accent/50 hover:bg-accent transition-colors flex items-center justify-center">
+              Sydney
+            </a>
+            <a href="/cities/beijing" className="text-primary font-medium py-2 px-4 rounded-lg bg-accent/50 hover:bg-accent transition-colors flex items-center justify-center">
+              Beijing
+            </a>
+          </div>
+        </div>
+
+        {/* FAQ Section */}
+        <div className="mt-8 max-w-3xl mx-auto text-left">
           <h2 className="text-2xl font-bold mb-6 text-center">Frequently Asked Questions</h2>
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-1">
