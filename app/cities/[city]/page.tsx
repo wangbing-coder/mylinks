@@ -99,15 +99,15 @@ export default function CityPage({ params }: CityPageProps) {
   const cityFaqs = [
     {
       question: `What time is it in ${cityInfo.name} now?`,
-      answer: `The current local time in ${cityInfo.name}, ${cityInfo.country} is shown above. ${cityInfo.name} is in the ${cityInfo.timezone} timezone.`
+      answer: `The current local time in ${cityInfo.name}, ${cityInfo.country} is ${currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' })}. ${cityInfo.name} is in the ${cityInfo.timezone} timezone.`
     },
     {
       question: `What is the time difference between ${cityInfo.name} and UTC?`,
-      answer: `${cityInfo.name} follows ${cityInfo.timezone} time. The exact offset from UTC varies depending on daylight saving time.`
+      answer: `${cityInfo.name} follows ${cityInfo.timezone} time. The current offset from UTC is ${currentTime.getTimezoneOffset() / -60} hours.`
     },
     {
       question: `Does ${cityInfo.name} observe Daylight Saving Time (DST)?`,
-      answer: `This depends on the local regulations in ${cityInfo.country}. The time shown above automatically adjusts for DST when applicable.`
+      answer: `This depends on the local regulations in ${cityInfo.country}. The time is currently ${currentTime.toLocaleTimeString('en-US', { timeZoneName: 'long' })} and automatically adjusts for DST when applicable.`
     },
   ]
 
