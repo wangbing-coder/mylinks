@@ -4,6 +4,7 @@ import { Space_Grotesk } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Footer } from "@/components/footer"
+import { Analytics } from "@/components/analytics"
 
 // Load Space Grotesk for general text
 const spaceGrotesk = Space_Grotesk({
@@ -50,6 +51,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <Analytics />
+      </head>
       <body className={spaceGrotesk.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <main>
