@@ -1,0 +1,11 @@
+# https://datetime.app llms.txt
+
+> This site offers tools for tracking current time, converting time zones, viewing world clocks, managing calendars, and calculating sunrise and sunset times, catering to users needing accurate time-related information across different locations.
+
+- [World Time and Tools](https://datetime.app): Display current time, world clock, calendar, time zone conversions, and related tools.
+- [Current Time in Paris](https://datetime.app/cities/paris): Displays the current time and timezone information for Paris, France.
+- [Current Time in Tokyo](https://datetime.app/cities/tokyo): Displays current time and timezone information for Tokyo, Japan.
+- [Current Time in London](https://datetime.app/cities/london): Provides current time and timezone information for London, United Kingdom.
+- [Current Time in New York](https://datetime.app/cities/new-york): Displays current time and timezone information for New York City.
+- [Current Time in Sydney](https://datetime.app/cities/sydney): Displays current time and timezone information for Sydney, Australia.
+- [Current Time in Beijing](https://datetime.app/cities/beijing): Displays the current time and timezone information for Beijing, China.
