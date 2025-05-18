@@ -341,13 +341,13 @@ export default function Home() {
               <div className="mb-8">
                 <h2 className="text-xl md:text-2xl font-medium mb-2">Current Time</h2>
                 <div className="relative group">
-                  <div 
+                  <div
                     className={`text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-none ${jetbrainsMono.className} cursor-pointer`}
                     onClick={() => setIsFullscreen(true)}
                   >
                     {formattedTime}
                   </div>
-                  <button 
+                  <button
                     onClick={() => setIsFullscreen(true)}
                     className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-all"
                     title="Enter fullscreen"
@@ -404,7 +404,12 @@ export default function Home() {
 
                 <Card className="shadow-none rounded-none border">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-lg">UTC Time</CardTitle>
+                    <CardTitle className="text-lg text-center">
+                      <a href="/utc" className="inline-flex items-center gap-1 hover:underline justify-center">
+                        UTC Time
+                        <Globe className="h-3 w-3" />
+                      </a>
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="text-center">
                     <div className="inline-flex items-center gap-2">
@@ -862,7 +867,7 @@ export default function Home() {
         </div>
       </div>
 
-      <FullscreenTime 
+      <FullscreenTime
         time={formattedTime}
         isFullscreen={isFullscreen}
         onClose={() => setIsFullscreen(false)}
