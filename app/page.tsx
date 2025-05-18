@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Calendar as CalendarComponent } from "@/components/ui/calendar"
-import { Clock, Globe, CalendarIcon, Timer, ArrowLeftRight, Sun, Moon, AlertCircle, Copy, Check, Maximize2, Calendar } from "lucide-react"
+import { Clock, Globe, CalendarIcon, Timer, ArrowLeftRight, Sun, Moon, AlertCircle, Copy, Check, Maximize2, Calendar, Calculator } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Label } from "@/components/ui/label"
 import { format } from "date-fns"
@@ -744,10 +744,14 @@ export default function Home() {
         {/* Tools Section */}
         <div className="mt-16 max-w-3xl mx-auto">
           <h2 className="text-2xl font-bold mb-6 text-center">Time Tools</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <a href="/year-progress-bar" className="text-primary font-medium py-3 px-4 rounded-lg bg-accent/50 hover:bg-accent transition-colors flex items-center justify-center gap-2">
               <Calendar className="h-5 w-5" />
               Year Progress Bar
+            </a>
+            <a href="/age-calculator" className="text-primary font-medium py-3 px-4 rounded-lg bg-accent/50 hover:bg-accent transition-colors flex items-center justify-center gap-2">
+              <Calculator className="h-5 w-5" />
+              Age Calculator
             </a>
             <a href="/utc" className="text-primary font-medium py-3 px-4 rounded-lg bg-accent/50 hover:bg-accent transition-colors flex items-center justify-center gap-2">
               <Globe className="h-5 w-5" />
