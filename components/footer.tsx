@@ -38,6 +38,7 @@ export function Footer() {
       <p className="mb-2">{new Date().getFullYear()} datetime.app - Precise World Time</p>
       <p className="space-x-4 mb-3">
         <Link href="/about" className="hover:text-gray-900 dark:hover:text-gray-200">About</Link>
+        <Link href="/glossary" className="hover:text-gray-900 dark:hover:text-gray-200">Glossary</Link>
         <Link href="https://github.com/airyland/datetime.app" className="hover:text-gray-900 dark:hover:text-gray-200" target="_blank" rel="noopener noreferrer">GitHub</Link>
       </p>
       <p className="text-xs text-gray-500 dark:text-gray-500">

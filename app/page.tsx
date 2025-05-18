@@ -410,6 +410,9 @@ export default function Home() {
                         <Globe className="h-3 w-3" />
                       </a>
                     </CardTitle>
+                    <div className="text-xs text-center mt-1">
+                      <a href="/glossary/utc" className="text-muted-foreground hover:underline">Learn about UTC</a>
+                    </div>
                   </CardHeader>
                   <CardContent className="text-center">
                     <div className="inline-flex items-center gap-2">

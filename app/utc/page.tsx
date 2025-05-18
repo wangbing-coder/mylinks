@@ -137,14 +137,19 @@ export default function UTCPage() {
             <h2 className="text-xl md:text-2xl font-medium mb-2 text-muted-foreground">
               The World's Time Standard
             </h2>
+            <div className="text-sm mb-4">
+              <Link href="/glossary/utc" className="text-primary hover:underline">
+                Learn more about UTC in our glossary
+              </Link>
+            </div>
             <div className="relative group">
-              <div 
+              <div
                 className={`text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-none ${jetbrainsMono.className} cursor-pointer`}
                 onClick={() => setIsFullscreen(true)}
               >
                 {formattedTime}
               </div>
-              <button 
+              <button
                 onClick={() => setIsFullscreen(true)}
                 className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-all"
                 title="Enter fullscreen"
@@ -255,6 +260,11 @@ export default function UTCPage() {
           {/* FAQ Section */}
           <div className="mt-8 max-w-3xl mx-auto text-left">
             <h2 className="text-2xl font-bold mb-6 text-center">UTC Time - Frequently Asked Questions</h2>
+            <p className="text-center mb-4">
+              <Link href="/glossary" className="text-primary hover:underline">
+                View our complete glossary of datetime concepts
+              </Link>
+            </p>
             <Accordion type="single" collapsible className="w-full">
               {utcFaqs.map((faq, index) => (
                 <AccordionItem key={index} value={`item-${index}`}>
@@ -269,7 +279,7 @@ export default function UTCPage() {
         </div>
       </div>
 
-      <FullscreenTime 
+      <FullscreenTime
         time={formattedTime}
         isFullscreen={isFullscreen}
         onClose={() => setIsFullscreen(false)}
