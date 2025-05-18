@@ -3,9 +3,9 @@
 import { useEffect, useState, use } from "react"
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Globe, Clock, AlertCircle, Copy, Check, Maximize2 } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { JetBrains_Mono } from "next/font/google"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { citiesData } from './metadata'

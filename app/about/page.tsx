@@ -25,6 +25,7 @@ export default function AboutPage() {
         <p className="mb-4">
           datetime.app is developed by the <Link href="https://datetime.app" className="text-blue-600 dark:text-blue-400 hover:underline">datetime.app</Link> team,
           powered by <Link href="https://v0.dev" className="text-blue-600 dark:text-blue-400 hover:underline">v0.dev</Link> and Windsurf technology,
+          with design inspiration from <Link href="https://time.is" className="text-blue-600 dark:text-blue-400 hover:underline">time.is</Link>,
           dedicated to providing the best time management experience for our users.
         </p>
       </div>

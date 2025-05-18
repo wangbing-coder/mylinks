@@ -1,4 +1,4 @@
-# datetime.app
+# Datetime.app
 
 [datetime.app](https://datetime.app) is a clean and powerful time viewing and conversion tool designed for developers, remote teams, and anyone who needs to work with different time zones.
 
@@ -42,7 +42,7 @@ Check out our other tools and services:
 
 MIT License
 
-Copyright (c) 2024 datetime.app
+Copyright (c) 2025 datetime.app
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
