@@ -43,6 +43,7 @@ export function Footer() {
         <Link href="/glossary" className="hover:text-gray-900 dark:hover:text-gray-200">Glossary</Link>
         <Link href="/year-progress-bar" className="hover:text-gray-900 dark:hover:text-gray-200">Year Progress</Link>
         <Link href="/age-calculator" className="hover:text-gray-900 dark:hover:text-gray-200">Age Calculator</Link>
+        <Link href="/holidays" className="hover:text-gray-900 dark:hover:text-gray-200">Holidays</Link>
         <Link href="https://github.com/airyland/datetime.app" className="hover:text-gray-900 dark:hover:text-gray-200" target="_blank" rel="noopener noreferrer">GitHub</Link>
       </p>
       <p className="text-xs text-gray-500 dark:text-gray-500 space-x-4">
