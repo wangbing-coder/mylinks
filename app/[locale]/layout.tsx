@@ -5,24 +5,18 @@ import "../globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Footer } from "@/components/footer"
 import { Analytics } from "@/components/analytics"
-import { LanguageSuggestionModal } from "@/components/language-suggestion-modal"
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
-import { notFound } from 'next/navigation'
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   display: "swap",
 })
 
-const locales = ['en', 'zh-hans', 'zh-hant', 'ar', 'de', 'es', 'fr', 'hi', 'it', 'ja', 'ko', 'pt', 'ru']
-
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
-  const { locale } = await params
-  const t = await getTranslations({ locale, namespace: 'common' })
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations({ locale: 'en', namespace: 'common' })
   
-  const baseUrl = 'https://datetime.app'
-  const canonicalUrl = locale === 'en' ? baseUrl : `${baseUrl}/${locale}`
+  const baseUrl = 'https://my-app.com'
   
   return {
     title: t('title'),
@@ -31,7 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       title: t('title'),
       description: t('description'),
       type: "website",
-      url: canonicalUrl,
+      url: baseUrl,
     },
     twitter: {
       card: "summary_large_image",
@@ -39,22 +33,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       description: t('description'),
     },
     alternates: {
-      canonical: canonicalUrl,
-      languages: {
-        'en': baseUrl,
-        'zh-hans': `${baseUrl}/zh-hans`,
-        'zh-hant': `${baseUrl}/zh-hant`,
-        'ar': `${baseUrl}/ar`,
-        'de': `${baseUrl}/de`,
-        'es': `${baseUrl}/es`,
-        'fr': `${baseUrl}/fr`,
-        'hi': `${baseUrl}/hi`,
-        'it': `${baseUrl}/it`,
-        'ja': `${baseUrl}/ja`,
-        'ko': `${baseUrl}/ko`,
-        'pt': `${baseUrl}/pt`,
-        'ru': `${baseUrl}/ru`,
-      }
+      canonical: baseUrl,
     },
     icons: {
       icon: [
@@ -69,21 +48,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function LocaleLayout({
   children,
-  params
 }: {
   children: React.ReactNode
-  params: Promise<{ locale: string }>
 }) {
-  const { locale } = await params
-  
-  if (!locales.includes(locale)) {
-    notFound()
-  }
-
-  const messages = await getMessages({ locale })
+  const messages = await getMessages({ locale: 'en' })
 
   return (
-    <html lang={locale} suppressHydrationWarning dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+    <html lang="en" suppressHydrationWarning>
       <head>
         {process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID && (
           <meta 
@@ -100,14 +71,9 @@ export default async function LocaleLayout({
               {children}
             </main>
             <Footer />
-            <LanguageSuggestionModal />
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>
     </html>
   )
-}
-
-export function generateStaticParams() {
-  return locales.map((locale) => ({ locale }))
 }

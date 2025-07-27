@@ -1,13 +1,12 @@
 {
-  "name": "my-v0-project",
+  "name": "my-app-template",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "ts-node scripts/generate-sitemap.ts && next build",
+    "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "sitemap": "ts-node scripts/generate-sitemap.ts"
+    "lint": "next lint"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
