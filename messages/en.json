@@ -23,5 +23,47 @@
       "title": "Feature 3",
       "description": "Description of your third feature goes here."
     }
+  },
+  "urlTracker": {
+    "title": "URL Tracker",
+    "description": "Record and manage daily submitted URLs",
+    "addUrl": "Add URL",
+    "urlPlaceholder": "https://example.com",
+    "todayCount": "Today: {count} URLs",
+    "addForm": {
+      "title": "Add New URL",
+      "description": "Enter the URL to track, system will automatically record submission date"
+    },
+    "filter": {
+      "title": "Filter by Date",
+      "today": "Today",
+      "showAll": "Show All"
+    },
+    "list": {
+      "title": "URL List",
+      "description": "URL records for {date}",
+      "allDescription": "All URL records",
+      "empty": "No URL records found"
+    },
+    "stats": {
+      "title": "Submission Statistics",
+      "description": "URL submission count for the last 30 days"
+    },
+    "actions": {
+      "copy": "Copy",
+      "open": "Open",
+      "delete": "Delete"
+    },
+    "messages": {
+      "urlRequired": "Please enter a URL",
+      "urlEmpty": "URL cannot be empty",
+      "addSuccess": "URL added successfully",
+      "addFailed": "Failed to add URL",
+      "copySuccess": "URL copied to clipboard",
+      "copyFailed": "Failed to copy URL",
+      "deleteSuccess": "URL deleted",
+      "deleteFailed": "Failed to delete URL",
+      "loadFailed": "Failed to load URL list"
+    }
   }
 }

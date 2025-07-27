@@ -55,6 +55,20 @@ export class TursoHelper {
         )
       `);
 
+      // 创建每日URL跟踪表
+      await turso.execute(`
+        CREATE TABLE IF NOT EXISTS daily_urls (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          url TEXT NOT NULL,
+          domain TEXT,
+          date DATE NOT NULL,
+          type TEXT DEFAULT 'url' CHECK (type IN ('url', 'better_link')),
+          tag TEXT DEFAULT 'nav' CHECK (tag IN ('nav', 'blog', 'profile', 'other')),
+          comment TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+
       console.log('数据库表初始化成功');
       return { success: true, message: '数据库表初始化成功' };
     } catch (error) {
@@ -269,6 +283,28 @@ export class TursoHelper {
     }
   }
 
+  // 删除项目及其所有相关数据
+  static async deleteProject(projectId: number) {
+    try {
+      // 首先删除所有相关的反向链接
+      await turso.execute({
+        sql: 'DELETE FROM backlinks WHERE project_id = ?',
+        args: [projectId]
+      });
+
+      // 然后删除项目本身
+      const result = await turso.execute({
+        sql: 'DELETE FROM projects WHERE id = ?',
+        args: [projectId]
+      });
+
+      return { success: true, message: 'Project and all related data deleted successfully' };
+    } catch (error) {
+      console.error('Failed to delete project:', error);
+      return { success: false, message: 'Failed to delete project', error };
+    }
+  }
+
   // 根据项目ID获取反向链接
   static async getBacklinksByProject(projectId: number) {
     try {
@@ -357,6 +393,189 @@ export class TursoHelper {
     } catch (error) {
       console.error('测试数据清空失败:', error);
       return { success: false, message: '测试数据清空失败', error };
+    }
+  }
+
+  // 每日URL管理方法
+  static async addDailyUrl(url: string, date?: string, comment?: string, type: 'url' | 'better_link' = 'url', tag: 'nav' | 'blog' | 'profile' | 'other' = 'nav') {
+    try {
+      const submitDate = date || new Date().toISOString().split('T')[0];
+      
+      // 提取域名
+      let domain: string | null = null;
+      try {
+        const urlObj = new URL(url);
+        domain = urlObj.hostname.replace(/^www\./, ''); // 去掉 www 前缀
+      } catch (error) {
+        console.warn('Failed to extract domain from URL:', url, error);
+      }
+      
+      const result = await turso.execute({
+        sql: 'INSERT INTO daily_urls (url, domain, date, type, tag, comment) VALUES (?, ?, ?, ?, ?, ?)',
+        args: [url, domain, submitDate, type, tag, comment || null]
+      });
+      return { success: true, data: result };
+    } catch (error) {
+      console.error('Failed to add daily URL:', error);
+      return { success: false, error };
+    }
+  }
+
+  static async getDailyUrls(date?: string, type?: 'url' | 'better_link', tag?: 'nav' | 'blog' | 'profile' | 'other') {
+    try {
+      let sql = 'SELECT * FROM daily_urls';
+      let args: any[] = [];
+      let conditions: string[] = [];
+      
+      if (date) {
+        conditions.push('date = ?');
+        args.push(date);
+      }
+      
+      if (type) {
+        conditions.push('type = ?');
+        args.push(type);
+      }
+      
+      if (tag) {
+        conditions.push('tag = ?');
+        args.push(tag);
+      }
+      
+      if (conditions.length > 0) {
+        sql += ' WHERE ' + conditions.join(' AND ');
+      }
+      
+      sql += ' ORDER BY tag, created_at DESC';
+      
+      const result = await turso.execute({
+        sql,
+        args
+      });
+      return { success: true, data: result.rows };
+    } catch (error) {
+      console.error('Failed to get daily URLs:', error);
+      return { success: false, error };
+    }
+  }
+
+  static async getDailyUrlByUrl(url: string) {
+    try {
+      const result = await turso.execute({
+        sql: 'SELECT * FROM daily_urls WHERE url = ? LIMIT 1',
+        args: [url]
+      });
+      return { success: true, data: result.rows[0] || null };
+    } catch (error) {
+      console.error('Failed to get daily URL by URL:', error);
+      return { success: false, error };
+    }
+  }
+
+  static async deleteDailyUrl(id: number) {
+    try {
+      const result = await turso.execute({
+        sql: 'DELETE FROM daily_urls WHERE id = ?',
+        args: [id]
+      });
+      return { success: true, data: result };
+    } catch (error) {
+      console.error('Failed to delete daily URL:', error);
+      return { success: false, error };
+    }
+  }
+
+  static async getDailyUrlStats(type?: 'url' | 'better_link') {
+    try {
+      let sql = `
+        SELECT 
+          date,
+          COUNT(*) as count
+        FROM daily_urls
+      `;
+      
+      if (type) {
+        sql += ` WHERE type = '${type}'`;
+      }
+      
+      sql += `
+        GROUP BY date
+        ORDER BY date DESC
+        LIMIT 30
+      `;
+      
+      const result = await turso.execute(sql);
+      return { success: true, data: result.rows };
+    } catch (error) {
+      console.error('Failed to get daily URL stats:', error);
+      return { success: false, error };
+    }
+  }
+
+  // 为现有记录迁移域名数据
+  static async migrateDomainData() {
+    try {
+      // 获取所有没有域名的记录
+      const result = await turso.execute({
+        sql: 'SELECT id, url FROM daily_urls WHERE domain IS NULL',
+        args: []
+      });
+
+      for (const row of result.rows) {
+        const id = row.id;
+        const url = row.url as string;
+        
+        // 提取域名
+        try {
+          const urlObj = new URL(url);
+          const domain = urlObj.hostname.replace(/^www\./, '');
+          
+          // 更新记录
+          await turso.execute({
+            sql: 'UPDATE daily_urls SET domain = ? WHERE id = ?',
+            args: [domain, id]
+          });
+        } catch (error) {
+          console.warn(`Failed to extract domain from URL: ${url}`, error);
+        }
+      }
+      
+      console.log(`Migrated domain data for ${result.rows.length} records`);
+      return { success: true };
+    } catch (error) {
+      console.error('Failed to migrate domain data:', error);
+      return { success: false, error };
+    }
+  }
+
+  // 检查 better link 在反向链接中匹配的项目数量
+  static async checkBacklinkProjects(domain: string) {
+    try {
+      const result = await turso.execute({
+        sql: `
+          SELECT 
+            COUNT(DISTINCT b.project_id) as project_count,
+            COUNT(b.id) as backlink_count
+          FROM backlinks b
+          WHERE b.source_domain = ? 
+             OR b.source_domain = ? 
+             OR b.source_domain LIKE ?
+             OR b.source_domain LIKE ?
+        `,
+        args: [domain, `www.${domain}`, `%.${domain}`, `www.%.${domain}`]
+      });
+      
+      const row = result.rows[0] as any;
+      return { 
+        success: true, 
+        data: {
+          projectCount: Number(row?.project_count || 0),
+          backlinkCount: Number(row?.backlink_count || 0)
+        }
+      };
+    } catch (error) {
+      console.error('Failed to check backlink projects:', error);
+      return { success: false, error };
     }
   }
 } 

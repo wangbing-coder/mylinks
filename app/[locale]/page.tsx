@@ -7,12 +7,13 @@ import CsvUploader from '@/components/backlink-analyzer/csv-uploader'
 import DataDisplay from '@/components/backlink-analyzer/data-display'
 import GroupManager from '@/components/backlink-analyzer/group-manager'
 import GroupProjects from '@/components/backlink-analyzer/group-projects'
+import UrlTracker from '@/components/url-tracker/url-tracker'
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { FolderOpen, Upload } from 'lucide-react'
+import { FolderOpen, Upload, Link } from 'lucide-react'
 
 interface Backlink {
   id: number
@@ -33,7 +34,7 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [alert, setAlert] = useState<{ type: 'success' | 'error', message: string } | null>(null)
-  const [currentView, setCurrentView] = useState<'groups' | 'upload' | 'data' | 'group-projects'>('groups')
+  const [currentView, setCurrentView] = useState<'groups' | 'upload' | 'data' | 'group-projects' | 'url-tracker'>('groups')
   const [selectedProject, setSelectedProject] = useState<{ id: number, name: string } | null>(null)
   const [selectedGroup, setSelectedGroup] = useState<{ id: number, name: string, color: string } | null>(null)
 
@@ -145,6 +146,14 @@ export default function HomePage() {
               <Upload className="h-4 w-4 mr-2" />
               Upload Data
             </Button>
+            <Button
+              variant={currentView === 'url-tracker' ? 'default' : 'ghost'}
+              className="w-full justify-start"
+              onClick={() => setCurrentView('url-tracker')}
+            >
+              <Link className="h-4 w-4 mr-2" />
+              URL Tracker
+            </Button>
           </div>
         </div>
       </div>
@@ -154,12 +163,12 @@ export default function HomePage() {
         <Header />
         <div className="flex-1 container mx-auto px-6 py-8">
           <div className="max-w-7xl mx-auto space-y-8">
-            <div className="text-center">
+            {/* <div className="text-center">
               <h1 className="text-4xl font-bold mb-4">Backlink Analyzer</h1>
               <p className="text-xl text-muted-foreground">
                 Extract and analyze valuable backlinks from Semrush exported CSV files
               </p>
-            </div>
+            </div> */}
 
             {/* 状态提示 */}
             {alert && (
@@ -176,6 +185,7 @@ export default function HomePage() {
                   <TabsTrigger value="group-projects">Group Projects</TabsTrigger>
                   <TabsTrigger value="upload">Upload Data</TabsTrigger>
                   <TabsTrigger value="data">Data View</TabsTrigger>
+                  <TabsTrigger value="url-tracker">URL Tracker</TabsTrigger>
                 </TabsList>
 
             <TabsContent value="groups" className="space-y-6">
@@ -199,6 +209,10 @@ export default function HomePage() {
                 onFileUpload={handleFileUpload}
                 isUploading={isUploading}
               />
+            </TabsContent>
+
+            <TabsContent value="url-tracker" className="space-y-6">
+              <UrlTracker />
             </TabsContent>
 
             {/* 数据详情页面 - 显示在右侧内容区域 */}

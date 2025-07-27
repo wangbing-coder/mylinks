@@ -4,7 +4,9 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Folder, ExternalLink, Calendar, TrendingUp, ArrowLeft, Download } from 'lucide-react'
+import { Folder, ExternalLink, Calendar, TrendingUp, ArrowLeft, Download, Trash2 } from 'lucide-react'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { useToast } from '@/hooks/use-toast'
 
 interface Project {
   id: number
@@ -54,6 +56,8 @@ export default function GroupProjects({
   const [groupBacklinks, setGroupBacklinks] = useState<Backlink[]>([])
   const [loading, setLoading] = useState(true)
   const [statisticsLoading, setStatisticsLoading] = useState(true)
+  const [deletingProjectId, setDeletingProjectId] = useState<number | null>(null)
+  const { toast } = useToast()
 
   const loadProjects = async () => {
     setLoading(true)
@@ -110,6 +114,41 @@ export default function GroupProjects({
       console.error('Failed to load group backlinks:', error)
     } finally {
       setStatisticsLoading(false)
+    }
+  }
+
+  // 删除项目
+  const handleDeleteProject = async (projectId: number, projectName: string) => {
+    setDeletingProjectId(projectId)
+    try {
+      const response = await fetch(`/api/backlink-analyzer/projects/${projectId}`, {
+        method: 'DELETE',
+      })
+      
+      const result = await response.json()
+      
+      if (result.success) {
+        toast({
+          title: "Project Deleted",
+          description: `Project "${projectName}" and all its data have been deleted successfully.`,
+        })
+        // 重新加载项目列表
+        await loadProjects()
+      } else {
+        toast({
+          title: "Delete Failed",
+          description: result.message || "Failed to delete project",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      toast({
+        title: "Delete Failed",
+        description: "An error occurred while deleting the project",
+        variant: "destructive",
+      })
+    } finally {
+      setDeletingProjectId(null)
     }
   }
 
@@ -176,7 +215,7 @@ export default function GroupProjects({
 
   const statistics = getGroupStatistics()
 
-  // CSV 导出功能
+  // CSV 导出功能 - All Source URLs
   const exportSourceUrlsToCSV = () => {
     if (statistics.uniqueSourceUrlsWithScore.length === 0) return
     
@@ -196,6 +235,33 @@ export default function GroupProjects({
     const url = URL.createObjectURL(blob)
     link.setAttribute('href', url)
     link.setAttribute('download', `${groupName.replace(/[^a-zA-Z0-9]/g, '_')}_source_urls.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  // CSV 导出功能 - Quality Source URLs
+  const exportQualitySourceUrlsToCSV = () => {
+    if (statistics.duplicatedSourceUrls.length === 0) return
+    
+    const headers = ['Source URL', 'Domain', 'Authority Score', 'Frequency']
+    
+    const csvContent = [
+      headers.join(','),
+      ...statistics.duplicatedSourceUrls.map(item => [
+        `"${item.url}"`,
+        `"${item.domain}"`,
+        item.maxScore,
+        item.count
+      ].join(','))
+    ].join('\n')
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', `${groupName.replace(/[^a-zA-Z0-9]/g, '_')}_quality_source_urls.csv`)
     link.style.visibility = 'hidden'
     document.body.appendChild(link)
     link.click()
@@ -267,8 +333,21 @@ export default function GroupProjects({
           {/* Quality Source URLs */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Quality Source URLs</CardTitle>
-              <p className="text-sm text-muted-foreground">Source URLs appearing ≥2 times (good for repeat outreach)</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-lg">Quality Source URLs</CardTitle>
+                  <p className="text-sm text-muted-foreground">Source URLs appearing ≥2 times (good for repeat outreach)</p>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={exportQualitySourceUrlsToCSV}
+                  disabled={statistics.duplicatedSourceUrls.length === 0}
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Export CSV
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               {statistics.duplicatedSourceUrls.length === 0 ? (
@@ -410,14 +489,44 @@ export default function GroupProjects({
                   <span>Created {new Date(project.created_at).toLocaleDateString('en-US')}</span>
                 </div>
 
-                {/* View details button */}
-                <Button 
-                  onClick={() => onProjectSelect(project.id, project.name)}
-                  className="w-full"
-                  size="sm"
-                >
-                  View Details
-                </Button>
+                {/* Action buttons */}
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={() => onProjectSelect(project.id, project.name)}
+                    className="flex-1"
+                    size="sm"
+                  >
+                    View Details
+                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        disabled={deletingProjectId === project.id}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Project</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you sure you want to delete the project "{project.name}"? This will permanently delete the project and all its backlink data. This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleDeleteProject(project.id, project.name)}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          {deletingProjectId === project.id ? 'Deleting...' : 'Delete Project'}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               </CardContent>
             </Card>
           ))}
