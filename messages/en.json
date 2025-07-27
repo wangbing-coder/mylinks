@@ -1,6 +1,6 @@
 {
   "common": {
-    "title": "My App",
+    "title": "BackLinks Checker",
     "description": "A modern web application built with Next.js",
     "nav": {
       "home": "Home",
@@ -9,7 +9,7 @@
     }
   },
   "home": {
-    "title": "Welcome to My App",
+    "title": "Welcome to BackLinks Checker",
     "description": "This is a template application built with Next.js, Tailwind CSS, and shadcn/ui components.",
     "feature1": {
       "title": "Feature 1",
