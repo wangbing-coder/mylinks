@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { url, date, comment, type, tag } = body
+    const { url, date, comment, type, tag, color } = body
 
     if (!url) {
       return NextResponse.json({
@@ -68,10 +68,18 @@ export async function POST(request: NextRequest) {
       }, { status: 400 })
     }
 
+    // 验证 color 值
+    if (color && !['green', 'blue', 'red', 'yellow', 'purple', 'gray'].includes(color)) {
+      return NextResponse.json({
+        success: false,
+        message: 'Invalid color value. Must be one of: green, blue, red, yellow, purple, gray'
+      }, { status: 400 })
+    }
+
     // 确保数据库表已初始化
     await TursoHelper.initializeTables()
 
-    const result = await TursoHelper.addDailyUrl(url, date, comment, type || 'url', tag || 'nav')
+    const result = await TursoHelper.addDailyUrl(url, date, comment, type || 'url', tag || 'nav', color || 'green')
     
     if (!result.success) {
       return NextResponse.json({

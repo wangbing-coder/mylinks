@@ -60,7 +60,6 @@ interface SourceUrlItem {
 
 interface UploadedFile {
   file: File
-  preview: string[]
 }
 
 // 标签配置
@@ -294,7 +293,8 @@ export default function GroupProjects({
           date: new Date().toISOString().split('T')[0],
           type: 'better_link',
           tag: starTag,
-          comment: starComment || `Starred from ${groupName} group`
+          comment: starComment || `Starred from ${groupName} group`,
+          color: 'green'  // 从 source url 添加的默认是绿色
         })
       })
       
@@ -392,11 +392,7 @@ export default function GroupProjects({
     }
 
     try {
-      const text = await file.text()
-      const lines = text.split('\n').filter(line => line.trim())
-      const preview = lines.slice(0, 5) // Show first 5 lines as preview
-      
-      setUploadedFile({ file, preview })
+      setUploadedFile({ file })
       setProjectName(file.name.replace('.csv', ''))
     } catch (error) {
       toast({
@@ -869,7 +865,7 @@ export default function GroupProjects({
               </CardContent>
             </Card>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px]">
+          <DialogContent className="sm:max-w-[480px]">
             <DialogHeader>
               <DialogTitle>Upload Project Data</DialogTitle>
               <DialogDescription>
@@ -934,22 +930,7 @@ export default function GroupProjects({
                 />
               </div>
 
-              {/* File Preview */}
-              {uploadedFile && (
-                <div className="space-y-2">
-                  <Label>File Preview</Label>
-                  <div className="bg-muted p-3 rounded-lg text-sm font-mono">
-                    {uploadedFile.preview.map((line, index) => (
-                      <div key={index} className="truncate">
-                        {line}
-                      </div>
-                    ))}
-                    {uploadedFile.preview.length >= 5 && (
-                      <div className="text-muted-foreground">...</div>
-                    )}
-                  </div>
-                </div>
-              )}
+
             </div>
 
             <DialogFooter>

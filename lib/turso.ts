@@ -65,6 +65,7 @@ export class TursoHelper {
           type TEXT DEFAULT 'url' CHECK (type IN ('url', 'better_link')),
           tag TEXT DEFAULT 'nav' CHECK (tag IN ('nav', 'blog', 'profile', 'other')),
           comment TEXT,
+          color TEXT DEFAULT 'green' CHECK (color IN ('green', 'blue', 'red', 'yellow', 'purple', 'gray')),
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
       `);
@@ -222,21 +223,13 @@ export class TursoHelper {
   // 创建或获取项目
   static async createOrGetProject(name: string, description?: string, groupId?: number) {
     try {
-      // 先尝试获取现有项目
+      // 先尝试获取现有项目（在指定组内查找）
       const existingProject = await turso.execute({
-        sql: 'SELECT * FROM projects WHERE name = ?',
-        args: [name]
+        sql: 'SELECT * FROM projects WHERE name = ? AND group_id = ?',
+        args: [name, groupId || null]
       });
 
       if (existingProject.rows.length > 0) {
-        // 如果项目存在但需要更新分组
-        if (groupId !== undefined && existingProject.rows[0].group_id !== groupId) {
-          await turso.execute({
-            sql: 'UPDATE projects SET group_id = ? WHERE id = ?',
-            args: [groupId, existingProject.rows[0].id]
-          });
-          return { success: true, data: { ...existingProject.rows[0], group_id: groupId } };
-        }
         return { success: true, data: existingProject.rows[0] };
       }
 
@@ -397,7 +390,7 @@ export class TursoHelper {
   }
 
   // 每日URL管理方法
-  static async addDailyUrl(url: string, date?: string, comment?: string, type: 'url' | 'better_link' = 'url', tag: 'nav' | 'blog' | 'profile' | 'other' = 'nav') {
+  static async addDailyUrl(url: string, date?: string, comment?: string, type: 'url' | 'better_link' = 'url', tag: 'nav' | 'blog' | 'profile' | 'other' = 'nav', color: 'green' | 'blue' | 'red' | 'yellow' | 'purple' | 'gray' = 'green') {
     try {
       const submitDate = date || new Date().toISOString().split('T')[0];
       
@@ -411,8 +404,8 @@ export class TursoHelper {
       }
       
       const result = await turso.execute({
-        sql: 'INSERT INTO daily_urls (url, domain, date, type, tag, comment) VALUES (?, ?, ?, ?, ?, ?)',
-        args: [url, domain, submitDate, type, tag, comment || null]
+        sql: 'INSERT INTO daily_urls (url, domain, date, type, tag, comment, color) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        args: [url, domain, submitDate, type, tag, comment || null, color]
       });
       return { success: true, data: result };
     } catch (error) {
@@ -468,6 +461,44 @@ export class TursoHelper {
       return { success: true, data: result.rows[0] || null };
     } catch (error) {
       console.error('Failed to get daily URL by URL:', error);
+      return { success: false, error };
+    }
+  }
+
+  static async updateDailyUrl(id: number, updates: { comment?: string; color?: 'green' | 'blue' | 'red' | 'yellow' | 'purple' | 'gray'; tag?: 'nav' | 'blog' | 'profile' | 'other' }) {
+    try {
+      const setParts: string[] = [];
+      const args: any[] = [];
+      
+      if (updates.comment !== undefined) {
+        setParts.push('comment = ?');
+        args.push(updates.comment);
+      }
+      
+      if (updates.color) {
+        setParts.push('color = ?');
+        args.push(updates.color);
+      }
+      
+      if (updates.tag) {
+        setParts.push('tag = ?');
+        args.push(updates.tag);
+      }
+      
+      if (setParts.length === 0) {
+        return { success: false, error: 'No updates provided' };
+      }
+      
+      args.push(id);
+      
+      const result = await turso.execute({
+        sql: `UPDATE daily_urls SET ${setParts.join(', ')} WHERE id = ?`,
+        args
+      });
+      
+      return { success: true, data: result };
+    } catch (error) {
+      console.error('Failed to update daily URL:', error);
       return { success: false, error };
     }
   }
